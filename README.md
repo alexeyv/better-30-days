@@ -1,61 +1,55 @@
 # better-30-days
 
-A rewrite of the prompt layer of [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill), an agent skill that researches any topic across Reddit, X, YouTube, TikTok, Hacker News, Polymarket, GitHub, and the web, ranked by real engagement.
+`/last30days` — research any topic through what people actually said about it in the last 30 days: Reddit threads with real upvote counts, X posts, YouTube transcripts, TikTok, Hacker News, Polymarket odds, GitHub activity, and the web, ranked by engagement and synthesized into one cited brief.
 
-The upstream Python engine is excellent and is vendored here unchanged (MIT, © Matt Van Horn). What's rewritten is everything the model reads:
+This is a fork of [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill). **The research engine is the original, vendored unchanged** (v3.18.4, MIT, © Matt Van Horn). What's different is the instruction layer your agent reads — rewritten to be about 10x smaller. If you're looking for the original project, its docs, or its community, go to the link above. If you want the same tool with a much lighter footprint in your agent's context, you're in the right place.
 
-| | upstream | this repo |
+## What you get
+
+Same commands, same engine, same output format:
+
+```
+/last30days Peter Steinberger          # person: their posts, PRs, what people say about them
+/last30days nvidia earnings reaction   # topic across all sources
+/last30days OpenClaw vs Hermes         # side-by-side comparison
+/last30days trending                   # what's accelerating right now
+/last30days what's exploding in AI agents
+```
+
+Zero-config sources out of the box (Reddit with comments, HN, Polymarket, GitHub, web). A first-run setup takes ~30 seconds and unlocks X, YouTube, TikTok, and more. Same optional keys, same `~/.config/last30days/.env`, same saved briefs in `~/Documents/Last30Days` — configs from the original carry over as-is.
+
+## How this fork differs
+
+The original loads a 2,255-line instruction file into your agent's context on every single run. This fork loads about 200:
+
+| | original | this fork |
 |---|---|---|
-| SKILL.md | 2,255 lines | 116 lines |
-| loaded per typical run | 2,255 lines | ~200 lines (SKILL.md + one reference file) |
-| shell mechanics | ~300 lines of prompt asking the model to compose portable bash | `scripts/run.sh` (~100 lines of actual bash) |
-| synthesis | in the main conversation, guarded by 11 "LAWs" restated at four tiers | a subagent with a fresh context and an 85-line contract |
+| instructions loaded per run | 2,255 lines, all flows every time | 116-line core + only the file for your flow (setup, trending, comparison, ...) |
+| shell plumbing | the agent assembles portable bash from instructions | one `run.sh` script does it deterministically |
+| report writing | in your main conversation, competing with everything else in it | in a separate agent with a clean context (falls back to inline on hosts without subagents) |
+| raw evidence | passes through your conversation | goes to a file; only the finished report reaches you |
 
-## Why
+Practical effects: less of your context window spent on the tool, faster starts, your conversation stays clean after a run, and the report format is more reliably followed — the original's format rules exist because agents kept breaking them under a 2,255-line load; a small contract in a clean context doesn't need enforcing.
 
-The upstream SKILL.md documents its own failure mode: with the full file loaded, the hosting model repeatedly improvised — invented titles, dumped raw evidence, appended forbidden source lists (a documented 0/8 public regression). Each incident was patched with more prompt: repeated rules, positional anchors, forensic narratives. The file's length is the root cause of the failures the length exists to prevent.
+Tested against the original's own recorded eval fixtures (all seven topic archetypes, replayed offline through its eval harness): 7/7 compliant reports, and 100% of citations grounded in the actual retrieved evidence — no invented links. Details in [NOTES.md](NOTES.md).
 
-This rewrite applies three moves:
+## Install
 
-1. **Progressive disclosure.** Mutually exclusive flows (setup, discovery, comparison, doctor, HTML export, hiring signals, library) each live in `references/*.md` and load only when routed to.
-2. **Deterministic work goes to a script.** Interpreter resolution, config gates, and JSON-on-stdin handling live in `run.sh`. The model passes `--plan -` and pipes JSON; no mktemp/quoting folklore in the prompt.
-3. **Synthesis runs in a clean context.** The engine's evidence goes to a file, never into the conversation. A subagent reads the 85-line output contract plus the evidence and returns the report. Nothing competes with the instructions, so they don't need to be shouted.
-
-## Does it work?
-
-Validated against the upstream engine, unmodified:
-
-- Live run: fully compliant report on the first attempt.
-- All seven of upstream's recorded eval fixtures (breaking event, comparison, emerging event, niche, CJK, person, tech product) replayed offline and synthesized: **7/7** on every output-contract check — engine version line verbatim, footer byte-identical, correct body shape per query type, no stray headers, no em-dashes, no evidence dumps, no trailing source lists.
-- **54/54 (100%) citation grounding**: every linked URL in every report resolves to a URL present in the recorded fixture inputs. The fixtures use synthetic entities on `.test` domains, so a fabricated link could not be right by luck.
-- Fixtures with no community comments or prediction markets degraded honestly and said so, instead of inventing quotes.
-
-Engine-side eval metrics (grounding, recency, coherence, coverage, determinism) are unchanged by construction — the engine wasn't touched. Full notes in [NOTES.md](NOTES.md).
-
-## Install / use
-
-The skill keeps the upstream command name, so it acts as a drop-in replacement — don't install both.
-
-Any Agent Skills host:
+Works on any [Agent Skills](https://agentskills.io) host that can run bash and Python 3.12+ (Claude Code, Codex, Cursor, Copilot, Gemini CLI, ...):
 
 ```
 npx skills add alexeyv/better-30-days -g
 ```
 
-Or point your harness's skills directory at `skills/last30days/`. Then:
+Or copy `skills/last30days/` into your harness's skills directory. The command name is `/last30days`, same as the original — it's a drop-in replacement, so **install one or the other, not both**.
 
-```
-/last30days <topic>
-/last30days trending
-/last30days A vs B
-```
+Run it once and the setup wizard offers the optional unlocks (browser-cookie X auth, yt-dlp for YouTube, a free ScrapeCreators key for TikTok/Instagram). Everything is opt-in and consent-asked; `run.sh --preflight` prints exactly what the tool reads and writes.
 
-Subagent-capable harnesses get isolated synthesis; others fall back to inline synthesis with the same contract. Requires Python 3.12+ (run.sh will provision one via `uv` if available).
+## When to use the original instead
 
-## Status
-
-An experiment in prompt-layer engineering, built and validated in one session. The engine tracks upstream at v3.18.4; refresh `skills/last30days/scripts/` (except `run.sh`) from upstream to update. Not affiliated with or endorsed by the upstream project.
+- You want the marketplace auto-update channel, the MCP server, or the newest engine features the moment they ship — this fork tracks upstream manually (currently v3.18.4).
+- You want upstream support and issue triage. This fork is an independent experiment, not affiliated with or endorsed by the original project. Engine bugs belong upstream; instruction-layer issues belong here.
 
 ## License
 
-MIT. Engine and original skill contract © Matt Van Horn; rewritten prompt layer © Alex Verkhovsky. See [LICENSE](LICENSE).
+MIT. Engine and original skill © [Matt Van Horn](https://github.com/mvanhorn); rewritten instruction layer © Alex Verkhovsky. See [LICENSE](LICENSE).
