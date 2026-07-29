@@ -26,9 +26,23 @@ No `--plan` on comparison runs. `--competitors-list="A,B,C"` exists as a names-o
 
 Then run 2-3 web supplements for the rivalry itself ("A vs B comparison {year}", "A vs B which is better") and append them to the raw files. Comparison runs save one raw file per entity — the stderr line `[last30days] Comparison artifact set: main=...; peers=...` lists them; append the supplements section to each.
 
+## Synthesis (one agent per entity)
+
+Comparison replaces SKILL.md's single Synthesize step. If the harness cannot spawn subagents: read references/synthesis.md plus the Report format below and write the whole report yourself in one pass from the evidence file.
+
+**1. Entity agents** — spawn one per entity, in parallel. Each gets: the references/synthesis.md path, the path to **that entity's raw file only** (from the `Comparison artifact set:` stderr line; supplements already appended), REGISTER, link style, and this instruction, with the `## {Entity}` block lines copied in from the Report format below:
+
+> Read the synthesis file for evidence-reading and formatting rules (citations, link style, no em-dashes, verbatim comments); ignore its body shapes and its first-line/footer rules — you are writing one section of a larger report. From the evidence file, write only the `## {Entity}` section in exactly this shape: {block}. Then, after a line reading `<!-- MERGER NOTES -->`, add: a summary of the strongest signals (3 sentences max), the entity's numbers for a head-to-head table (GitHub stars, scale, pricing, current pitch — whatever the evidence actually has), and the single most quotable community line with attribution. Return nothing else.
+
+Give each agent its own entity's file and nothing else.
+
+**2. Merger** — after all entity agents return, spawn one merger (or write this part inline) with: the finished entity sections including their merger notes, the rivalry web-supplement bullets, the engine's first stdout line, the empty Head-to-Head scaffold and the pass-through footer copied byte-for-byte from the evidence file, and the full Report format below. Instruction: write Quick Verdict, Head-to-Head, The Bottom Line, and The emerging stack from the entity sections and merger notes only; assemble the complete report in the Report format's order, pasting the entity sections verbatim — never rewriting them — and deleting every `<!-- MERGER NOTES -->` block. The merger never reads the raw evidence clusters.
+
+Relay the merger's report verbatim. If an entity agent fails or its section doesn't match the required shape, spawn it once more; if that also fails, write the whole report yourself in one pass rather than deliver a partial comparison.
+
 ## Report format
 
-Hand the synthesis (subagent or inline) references/synthesis.md **plus this section**. Comparison replaces the GENERAL body shape entirely — no `What I learned:`, no KEY PATTERNS. All other synthesis.md rules hold (engine first line, footer verbatim, no trailing sources, comments woven in, citation style). These `##` headers — and only these — are required:
+This is the required output shape — for the merger, or for you when writing the report in one pass. Comparison replaces the GENERAL body shape entirely — no `What I learned:`, no KEY PATTERNS. All other synthesis.md rules hold (engine first line, footer verbatim, no trailing sources, comments woven in, citation style). These `##` headers — and only these — are required:
 
 ```
 {engine's first line}
