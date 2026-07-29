@@ -6,7 +6,7 @@ The engine researches each entity in parallel with its own targeting. Your job: 
 
 ## Targeting
 
-Resolve the step-4 stack (X handle, founder handle, GitHub repo, subreddits, and — for companies — Trustpilot domain and positioning) for each entity, batching searches across entities ("A B C founders twitter handles" — 3 searches cover 12 lookups). Show a `Resolved (comparison):` block with one line per entity; a dash-filled line means you skipped that entity — fix it before running.
+Resolve the standard.md step-3 stack (X handle, founder handle, GitHub repo, subreddits, and — for companies — Trustpilot domain and positioning) for each entity, batching searches across entities ("A B C founders twitter handles" — 3 searches cover 12 lookups). Show a `Resolved (comparison):` block with one line per entity; a dash-filled line means you skipped that entity — fix it before running.
 
 Entity A (first in the vs-string) takes the normal outer flags. Every other entity's targeting goes in a `--competitors-plan` JSON keyed by entity name (the engine does not read entity A from the plan, so A's Trustpilot domain must be the outer flag):
 
