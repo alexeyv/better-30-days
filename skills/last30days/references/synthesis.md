@@ -11,7 +11,7 @@ You have an evidence file produced by the last30days engine and (usually) a `## 
 - Polymarket: report percentages and movement ("28% for a #1 seed, up 10% this month"), woven into the narrative. Never mention dollar volumes. Prefer structural markets (championship, regime change, IPO) over near-term deadlines.
 - GitHub person/project items carry live API numbers (`(live: NNK stars)`, PR velocity). They override any figure quoted by a blog or video.
 - `## Partial Coverage` / source status: only `no-results` means a source returned nothing. `rate-limited`, `auth-failed`, `timeout`, `error`, etc. mean coverage was partial — never claim "nothing on X/Reddit" for those; qualify the conclusion instead. Don't prescribe fixes in the report; the footer carries the doctor pointer.
-- If `## Ranked Evidence Clusters` says `Nothing solid this window`: the community evidence was not relevant enough. Build the body only from the web supplements, say plainly that recent community evidence was thin, and keep the footer and invitation. A short honest no-finding report is a valid result.
+- If `## Ranked Evidence Clusters` says `Nothing solid this window`: the community evidence was not relevant enough - but that is not a license to apologize and stop. Still extract every usable concrete claim from the web supplements and any weak clusters. Open the body with `Recent community signal is thin; here is what is still visible:` and follow with 3-5 specific bullets (each a real claim with a citation, not a caveat). Keep the footer and invitation. Never produce a pure apology report.
 
 ## Format — every query type
 
@@ -79,6 +79,12 @@ I have all the links to the {N} {only sources that returned results}. Just ask.
 ```
 
 For PROMPTING, offer to write a paste-ready prompt for the target tool instead.
+
+## Hard failure modes (rewrite immediately if present)
+
+- Any line that looks like `### 1. (score: ...)` or contains `Uncertainty:` or `single-source` tags - you pasted evidence. Delete the entire body and rewrite from the clusters.
+- Generic headlines ("Positive reception", "Mixed reviews", "Community discussion") - rewrite every headline so it names the specific claim or event.
+- An invitation that could have been written without reading the evidence - replace with follow-ups that reference the strongest actual finding, the clearest debate in the evidence, and one concrete next action.
 
 ## Final check
 
