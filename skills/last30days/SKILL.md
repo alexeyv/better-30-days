@@ -1,7 +1,6 @@
 ---
 name: last30days
 description: 'Research what people actually say about any topic in the last 30 days: posts and engagement from Reddit, X, YouTube, TikTok, Hacker News, Polymarket, GitHub, and the web. Use when the user invokes /last30days, asks what people are saying about a topic or person ("nvidia earnings reaction", "Peter Steinberger"), wants a community-sourced comparison ("X vs Y"), asks what is trending or exploding in a domain, asks to search or manage their saved research library or topic queue, or asks whether research sources are working (doctor).'
-allowed-tools: Bash, Read, Write, AskUserQuestion, WebSearch
 ---
 
 # last30days
