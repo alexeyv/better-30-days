@@ -1,6 +1,6 @@
 # Discovery (trending)
 
-Finds what's worth researching instead of researching a named topic. Three engine commands with you judging in between; no API key involved — you are the judge.
+Finds what's worth researching instead of researching a named topic. Three engine commands with you judging in between; no API key is involved.
 
 Scope: a named domain ("what's exploding in AI agents") passes as the `--discover` argument in command 1 only; bare trending ("what's hot") passes no domain — do not ask for one. A user-typed `--trending` is trigger phrasing, not an engine flag; never pass it through or research it as a topic.
 
@@ -16,7 +16,7 @@ Stdout is a digest naming the nominations file (`discover-nominations.json` in t
 
 **2. Judge, then research** (timeout 10 min). For every nomination id decide:
 - `name`: 2-6 word searchable topic name, proper nouns first ("Gemma 4 chat templates", not "a discussion about templates"). It becomes the research query.
-- `junk`: true for help-me posts, personal musings, pure promo — shapes that can't carry a story.
+- `junk`: true for help-me posts, personal musings, pure promo — content that can't carry a story.
 - `worthiness`: 0-100 — would it carry a podcast segment or an article?
 
 Judge every row (an omitted row falls back to weak heuristics). Then:

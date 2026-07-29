@@ -4,7 +4,7 @@ Runs once, ever. ~30 seconds. The engine's `setup` command does only mechanical 
 
 Config file: `~/.config/last30days/.env`. Append-only, always: read first, add missing keys with `>>`, create with `mkdir -p ~/.config/last30days && touch ...` if absent, never truncate.
 
-**1. Welcome + mode.** Ask, including the pitch in the question itself:
+**1. Welcome + mode.** Ask, including the introduction in the question itself:
 
 > Welcome to /last30days! I research any topic across Reddit, X, YouTube, TikTok, Digg, arXiv, Techmeme, HN, Polymarket & more - pulling what people actually said in the last 30 days. How would you like to set up?
 > - **Auto setup (~30s)**: scan browser cookies for X + install yt-dlp (YouTube), Digg, arXiv, Techmeme. Reddit/HN/Polymarket/GitHub/Web work with no setup.
@@ -13,7 +13,7 @@ Config file: `~/.config/last30days/.env`. Append-only, always: read first, add m
 
 (On hosts without a modal question tool, first run `"$RUN_SH" --welcome` and show its stdout verbatim, then ask.)
 
-- **Skip** → append `SETUP_COMPLETE=true` to the config file (so this never re-fires) and go to step 5.
+- **Skip** → append `SETUP_COMPLETE=true` to the config file (so setup never runs again) and go to step 5.
 - **Manual** → show the manual guide (step 4), then step 5.
 - **Auto** → step 2.
 
@@ -22,9 +22,9 @@ Config file: `~/.config/last30days/.env`. Append-only, always: read first, add m
 - No, CLIs only → `FROM_BROWSER=off "$RUN_SH" setup`
 - xAI key instead → take the key, append `XAI_API_KEY=...`, then `FROM_BROWSER=off "$RUN_SH" setup`
 
-Report what setup found and installed, including whether the Digg CLI landed on PATH (active) or off-PATH (installed, not yet active). If stderr shows `Permission denied reading Cookies.binarycookies` on macOS: only the Safari fallback needs Full Disk Access — if their x.com login is in Chrome they don't need it; otherwise System Settings → Privacy & Security → Full Disk Access → enable the terminal, then offer one retry.
+Report what setup found and installed, including whether the Digg CLI is on PATH (active) or off PATH (installed, not yet active). If stderr shows `Permission denied reading Cookies.binarycookies` on macOS: only the Safari fallback needs Full Disk Access — if their x.com login is in Chrome they don't need it; otherwise System Settings → Privacy & Security → Full Disk Access → enable the terminal, then offer one retry.
 
-**3. ScrapeCreators offer (every first run).** Adds TikTok + Instagram (posts and top comments) and YouTube comments; also backfills Reddit search when the free path returns nothing, and backs up YouTube transcripts when yt-dlp is throttled. 10,000 free calls, no card; the GitHub signup grants more free calls than the web form. Ask; options:
+**3. ScrapeCreators offer (every first run).** Adds TikTok + Instagram (posts and top comments) and YouTube comments; also backfills Reddit search when the free path returns nothing, and fetches YouTube transcripts when yt-dlp is throttled. 10,000 free calls, no card; the GitHub signup grants more free calls than the web form. Ask; options:
 - **GitHub signup** → run `"$RUN_SH" setup --github-start` in the foreground (returns in ~2s). If `status=="already_registered"`: say their existing key is active; stop. Otherwise immediately show the `user_code` from the output: it's on their clipboard, paste it on the GitHub page that opened. Then run `"$RUN_SH" setup --github-poll` (5-min timeout) and read the **last** JSON line:
   - `success` + `persisted: true` → confirm active. (Key is masked; never ask for or echo a raw key.)
   - `success` + `persisted: false` → signup worked but saving failed; have them add `SCRAPECREATORS_API_KEY=...` manually.

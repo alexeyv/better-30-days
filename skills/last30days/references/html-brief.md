@@ -1,6 +1,6 @@
 # Shareable HTML brief
 
-Fires only when the user asked for HTML — an argument like `--emit=html`/`--html`, or phrasing like "shareable brief", "export as HTML", "for Slack/Notion". Never save HTML unasked.
+Applies only when the user asked for HTML — an argument like `--emit=html`/`--html`, or phrasing like "shareable brief", "export as HTML", "for Slack/Notion". Never save HTML unasked.
 
 Two modes:
 - **HTML as the deliverable** ("give it to me in HTML"): draft the synthesis, render the HTML, and hand off the file — don't paste the full report to chat too.
@@ -10,7 +10,7 @@ Flow:
 
 1. Write the synthesis body **verbatim** to a temp file — the `What I learned:` (or comparison) body and KEY PATTERNS only; no engine first line, no footer (the engine adds both when rendering). Same text, same citations as the chat report; do not paraphrase.
 
-2. Render, replaying the same scope flags as the research run (`--plan`, `--hiring-signals`, resolved handles/subs — they keep the footer aligned; on a same-topic follow-up the engine reuses its cached report instead of refetching):
+2. Render, passing the same scope flags as the research run (`--plan`, `--hiring-signals`, resolved handles/subs — they keep the footer aligned; on a same-topic follow-up the engine reuses its cached report instead of refetching):
 
 ```bash
 SLUG="{topic lowercased, non-alphanumerics to hyphens}"

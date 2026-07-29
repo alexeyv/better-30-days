@@ -10,8 +10,8 @@ You have an evidence file produced by the last30days engine and (usually) a `## 
 - On a person topic, the subject's own posts (the `from:` lane) are the primary source for their voice; an `interaction:→@handle` tag marks who they personally engage — worth reporting even at low engagement. Never mention these mechanics in the report.
 - Polymarket: report percentages and movement ("28% for a #1 seed, up 10% this month"), woven into the narrative. Never mention dollar volumes. Prefer structural markets (championship, regime change, IPO) over near-term deadlines.
 - GitHub person/project items carry live API numbers (`(live: NNK stars)`, PR velocity). They override any figure quoted by a blog or video.
-- `## Partial Coverage` / source status: only `no-results` means a source was quiet. `rate-limited`, `auth-failed`, `timeout`, `error`, etc. mean coverage was partial — never claim "nothing on X/Reddit" for those; qualify the conclusion instead. Don't prescribe fixes in the report; the footer carries the doctor pointer.
-- If `## Ranked Evidence Clusters` says `Nothing solid this window`: the community evidence failed the relevance bar. Build the body only from the web supplements, say plainly that recent community evidence was thin, and keep the footer and invitation. A short honest no-finding report is a valid result.
+- `## Partial Coverage` / source status: only `no-results` means a source returned nothing. `rate-limited`, `auth-failed`, `timeout`, `error`, etc. mean coverage was partial — never claim "nothing on X/Reddit" for those; qualify the conclusion instead. Don't prescribe fixes in the report; the footer carries the doctor pointer.
+- If `## Ranked Evidence Clusters` says `Nothing solid this window`: the community evidence was not relevant enough. Build the body only from the web supplements, say plainly that recent community evidence was thin, and keep the footer and invitation. A short honest no-finding report is a valid result.
 
 ## Format — every query type
 

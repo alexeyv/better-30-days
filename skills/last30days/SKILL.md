@@ -5,9 +5,9 @@ description: 'Research what people actually say about any topic in the last 30 d
 
 # last30days
 
-A Python engine (`scripts/last30days.py`) searches Reddit, X, YouTube, TikTok, Instagram, Hacker News, Polymarket, GitHub, and the web, and ranks the results by real engagement. Your job: resolve targeting, write the query plan, run the engine, and turn its evidence into one cited report. The engine is the research; never answer from web search alone, and never skip it.
+A Python engine (`scripts/last30days.py`) searches Reddit, X, YouTube, TikTok, Instagram, Hacker News, Polymarket, GitHub, and the web, and ranks the results by real engagement. Your job: resolve targeting, write the query plan, run the engine, and turn its evidence into one cited report. Never answer from web search alone, and never skip the engine.
 
-Invoke the engine only through `scripts/run.sh` (a sibling of this file's `scripts/` directory). It resolves Python 3.12+ (installing via uv when needed) and the save directory, and accepts JSON arguments on stdin: pass `-` as the value of `--plan`, `--judgments`, `--angles`, or `--competitors-plan` and pipe the JSON in via heredoc. Do not build tempfile plumbing yourself and do not wrap calls in `bash -lc '...'`. If run.sh exits with a Python-version error, show its message to the user and stop; do not fall back to web-only research.
+Invoke the engine only through `scripts/run.sh` (in the `scripts/` directory next to this file). It resolves Python 3.12+ (installing via uv when needed) and the save directory, and accepts JSON arguments on stdin: pass `-` as the value of `--plan`, `--judgments`, `--angles`, or `--competitors-plan` and pipe the JSON in via heredoc. Do not write the JSON to temp files yourself and do not wrap calls in `bash -lc '...'`. If run.sh exits with a Python-version error, show its message to the user and stop; do not fall back to web-only research.
 
 Set `RUN_SH` to the absolute path of `scripts/run.sh` next to the SKILL.md you just read. Engine runs go in the foreground: 5-minute timeout for research, 10 minutes for discovery research.
 
@@ -34,7 +34,7 @@ Match the request; follow only that row. Read a reference file only when its row
 
 ## Standard run
 
-Read references/standard.md and follow it top to bottom. It vets and classifies the topic, resolves targeting, writes the query plan, runs the engine with the evidence redirected to a file, and runs web supplements. It hands back an evidence-file path, a raw-file path, QUERY_TYPE, and REGISTER. Then:
+Read references/standard.md and follow it top to bottom. It vets and classifies the topic, resolves targeting, writes the query plan, runs the engine with the evidence redirected to a file, and runs web supplements. It returns an evidence-file path, a raw-file path, QUERY_TYPE, and REGISTER. Then:
 
 **Synthesize.** (Comparison runs: skip this step — references/comparison.md's Synthesis section replaces it.) If this harness can spawn subagents: spawn one with this instruction — "Read {references/synthesis.md path}, then {EVIDENCE path}. QUERY_TYPE={...}, REGISTER={...}, link style={inline|plain}. Also read the `## WebSearch Supplemental Results` section of {raw file path}. Write the report exactly per the synthesis file and return only the report text." Link style is `inline` when your interface renders markdown links as clickable labels with the URL hidden, `plain` when it prints URLs in full. Relay the returned report verbatim — do not edit, trim, or add to it. If you cannot spawn subagents, read references/synthesis.md and the evidence file and write the report yourself.
 

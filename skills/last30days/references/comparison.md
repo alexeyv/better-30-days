@@ -74,4 +74,4 @@ I've compared {A} vs {B} using the latest community data. Some things you could 
 - {follow-up on a specific claim or table row}
 ```
 
-Weight long-form blog comparisons from the web supplements equally with social data here — a thorough comparison article beats fifty one-line tweets. A cluster of independent replies all recommending the same thing is the strongest endorsement signal; say so when you see one.
+Weight long-form blog comparisons from the web supplements equally with social data here. A cluster of independent replies all recommending the same thing is the strongest endorsement signal; say so when you see one.
