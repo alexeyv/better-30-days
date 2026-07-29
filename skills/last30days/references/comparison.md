@@ -14,13 +14,16 @@ Entity A (first in the vs-string) takes the normal outer flags. Every other enti
 EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-$$.md"
 "$RUN_SH" "A vs B vs C" --emit=compact --save-suffix=v3 \
   --x-handle={A_handle} --subreddits={A_subs} [other A flags] \
+  --resolved='<the Resolved: block, covering every entity>' \
   --competitors-plan - > "$EVIDENCE" <<'EOF'
 {
-  "B": {"x_handle": "...", "subreddits": ["..."], "github_user": "...", "trustpilot_domain": "...", "context": "one-line disambiguator"},
+  "B": {"x_handle": "...", "subreddits": ["..."], "github_user": "...", "github_repos": ["owner/repo"], "trustpilot_domain": "...", "context": "one-line disambiguator"},
   "C": {"x_handle": "...", "subreddits": ["..."], "context": "..."}
 }
 EOF
 ```
+
+Per-entity fields are exactly `x_handle, x_related, subreddits, github_user, github_repos, trustpilot_domain, context` — run.sh rejects any other key, so don't improvise names from the outer flags (there is no `dedicated_subreddits` here; `github_repos` is a plural list).
 
 No `--plan` on comparison runs. `--competitors-list="A,B,C"` exists as a names-only fallback but produces visibly thinner peer data — use the plan. Up to 7 entities total; the engine warns on stderr about any it drops.
 

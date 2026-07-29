@@ -11,7 +11,7 @@ Produces an evidence file and a saved raw file, then hands back to SKILL.md's sy
 
 **2. Classify.** QUERY_TYPE = COMPARISON (contains " vs "/" versus "), RECOMMENDATIONS ("best X", "top X", "what X should I use"), NEWS ("what's happening with", "latest on"), PROMPTING ("X prompts", "prompting for X"), else GENERAL. Note TARGET_TOOL if named ("mockups **for Midjourney**") — don't ask for one before research. REGISTER = an explicit `--register` value, else `LAST30DAYS_REGISTER` from config, else default. Then tell the user in one line what you're doing, naming only sources the engine reports available (`"$RUN_SH" --diagnose` prints JSON; use its `available_sources`): `/last30days - searching {sources} for what people are saying about {topic}.`
 
-**3. Resolve targeting.** (If this session has no web-search tool: skip steps 3-4, add `--auto-resolve` to the engine command, and go to step 5.) Use 2-4 batched web searches plus what you already know; verify accounts are the entity's own, not fan/parody accounts.
+**3. Resolve targeting.** This step needs a web-search tool; if the session has none, tell the user targeting cannot be verified and stop — never resolve handles from memory. Use 2-4 batched web searches plus what you already know; verify accounts are the entity's own, not fan/parody accounts.
 
 **Verification rule** — never emit an `--x-handle`, `--github-user`, `--github-repo`, or dedicated subreddit that was not confirmed by a web search result in this turn. If you cannot confirm, omit the flag; prefer omission over a wrong handle. This single rule eliminates most wrong-person / wrong-repo runs.
 - **X**: primary handle; the founder's handle for a company topic or the company's for a person topic; 1-2 commentator/media handles that cover the space. → `--x-handle`, `--x-related` (related are searched at lower weight).
@@ -23,7 +23,7 @@ Produces an evidence file and a saved raw file, then hands back to SKILL.md's sy
 - **Positioning** (company/product topics only, never people or ownerless things): fetch the current first-party pitch (homepage tagline, pricing page). Used in synthesis; never quote positioning from memory.
 - One search for current news context, to inform the plan below.
 
-Omit any flag you couldn't resolve. Then show a short `Resolved:` block listing what you found (one line per platform, skip empty ones). For every critical handle/repo, include a short confirming fragment showing how it was verified (e.g. `@handle - bio matches, verified 2026-07`).
+Omit any flag you couldn't resolve. Then show a short `Resolved:` block listing what you found (one line per platform, skip empty ones; if nothing was targeted, say so in one line). For every critical handle/repo, include a short confirming fragment showing how it was verified (e.g. `@handle - bio matches, verified 2026-07`). This block is also the engine's admission ticket: pass the same text via `--resolved='...'` in step 5 — run.sh refuses research runs without it and rejects any `--x-handle`/`--github-user`/`--github-repo`/`--dedicated-subreddits` value that does not appear in the block.
 
 **4. Plan.** Write the query plan yourself (no API key is involved). 1-4 subqueries:
 
@@ -47,6 +47,7 @@ Rules: the primary subquery includes all seven sources above; secondary subqueri
 EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-$$.md"
 "$RUN_SH" "TOPIC" --emit=compact --save-suffix=v3 \
   --x-handle=... --subreddits=... [other resolved flags] \
+  --resolved='<the Resolved: block you showed the user>' \
   --plan - > "$EVIDENCE" <<'EOF'
 { ...your plan json... }
 EOF
