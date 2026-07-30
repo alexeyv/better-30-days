@@ -39,9 +39,9 @@ Comparison replaces SKILL.md's single Synthesize step; SKILL.md's subagent rule 
 
 Give each agent its own entity's file and nothing else.
 
-**2. Merger** — after all entity agents return, spawn one merger (or write this part inline) with: the finished entity sections including their merger notes, the rivalry web-supplement bullets, the engine's first stdout line, the empty Head-to-Head scaffold and the pass-through footer copied byte-for-byte from the evidence file, and the full Report format below. Instruction: write Quick Verdict, Head-to-Head, The Bottom Line, and The emerging stack from the entity sections and merger notes only; assemble the complete report in the Report format's order, pasting the entity sections verbatim — never rewriting them — and deleting every `<!-- MERGER NOTES -->` block. The merger never reads the raw evidence clusters.
+**2. Merger** — after all entity agents return, spawn one merger (or write this part inline) with: the finished entity sections including their merger notes, the rivalry web-supplement bullets, the engine's first stdout line, the empty Head-to-Head scaffold and the pass-through footer copied byte-for-byte from the evidence file, and the full Report format below. Instruction: write Quick Verdict, Head-to-Head, The Bottom Line, and The emerging stack from the entity sections and merger notes only; assemble the complete report in the Report format's order, pasting the entity sections verbatim — never rewriting them — and deleting every `<!-- MERGER NOTES -->` block; save the assembled report to a file and return the path. The merger never reads the raw evidence clusters.
 
-Relay the merger's report verbatim. If an entity agent fails or its section doesn't match the required shape, spawn it once more; if that also fails, write the whole report yourself in one pass rather than deliver a partial comparison.
+Relay by reading the merger's file and outputting its contents unchanged — same dashes, same spelling, engine typos included; retyping is a failure. If an entity agent fails or its section doesn't match the required shape, spawn it once more; if that also fails, write the whole report yourself in one pass rather than deliver a partial comparison.
 
 ## Report format
 
