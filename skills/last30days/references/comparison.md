@@ -31,7 +31,7 @@ Then run 2-3 web supplements for the rivalry itself ("A vs B comparison {year}",
 
 ## Synthesis (one agent per entity)
 
-Comparison replaces SKILL.md's single Synthesize step. If the harness cannot spawn subagents: read references/synthesis.md plus the Report format below and write the whole report yourself in one pass from the evidence file.
+Comparison replaces SKILL.md's single Synthesize step; SKILL.md's subagent rule applies (needing user instruction → you already asked once up front). Only when no subagent capability is available at all: read references/synthesis.md plus the Report format below and write the whole report yourself in one pass from the evidence file, saying so in one line first.
 
 **1. Entity agents** — spawn one per entity, in parallel. Each gets: the references/synthesis.md path, the path to **that entity's raw file only** (from the `Comparison artifact set:` stderr line; supplements already appended), REGISTER, link style, and this instruction, with the `## {Entity}` block lines copied in from the Report format below:
 
