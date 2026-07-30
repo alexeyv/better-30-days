@@ -89,4 +89,4 @@ For PROMPTING, offer to write a paste-ready prompt for the target tool instead.
 
 ## Final check
 
-First line is the engine's version line; body matches the QUERY_TYPE shape; ≥2 attributed verbatim comments woven in (if the evidence has them); Polymarket percentages included when markets exist; footer byte-identical; nothing after the invitation. Fix at most once, then deliver the best version; if a check couldn't be satisfied by the data, say so in one line placed just before the invitation, never after it.
+First line is the engine's version line; body matches the QUERY_TYPE shape; ≥2 attributed verbatim comments woven in (if the evidence has them); Polymarket percentages included when markets exist; footer byte-identical; no em/en-dashes outside quotes; nothing after the invitation. Fix at most once, then deliver the best version; if a check couldn't be satisfied by the data, say so in one line placed just before the invitation, never after it.
