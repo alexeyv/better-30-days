@@ -45,14 +45,17 @@ Rules: the primary subquery includes all seven sources above; secondary subqueri
 **5. Run the engine** (foreground, 5-minute timeout), saving stdout to a file so the evidence goes to the synthesis step, not the conversation:
 
 ```bash
-EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-$$.md"
+EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-{topic-slug}.md"
 uv run --no-cache "$RUN_PY" "TOPIC" --emit=compact --save-suffix=v3 \
   --x-handle=... --subreddits=... [other resolved flags] \
   --resolved='<the Resolved: block you showed the user>' \
   --plan - > "$EVIDENCE" <<'EOF'
 { ...your plan json... }
 EOF
+echo "$EVIDENCE"
 ```
+
+Pass the echoed literal path to the synthesis step — never a template with unexpanded shell variables; the subagent has no shell to expand them.
 
 Pass `--days=N`, `--quick`, `--deep`, `--register=...` through when the user asked for them. stderr shows progress and the `[last30days] Saved output to {path}` line — note that saved raw-file path. Exit 3 means the engine asked a clarifying question on stderr: relay it and re-run with the answer folded into the topic.
 
