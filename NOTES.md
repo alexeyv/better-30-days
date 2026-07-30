@@ -182,3 +182,40 @@ measurably worse-informed until the dropped domain knowledge is restored item
 by item.* The original's length is still the root cause of its enforcement
 problem, but its length was also where the domain knowledge lived, and
 compression is not a substitute for knowing which is which.
+
+## Bottom line (2026-07-30, after 12 A/B legs across two models and two effort levels)
+
+Full matrix run: fork vs untouched original on the same engine, same topics,
+headless, at Sonnet 5 medium and Opus 5 high. Where it settled:
+
+- **Wall time: a wash** at both effort levels; engine and network variance
+  dominate architecture.
+- **Information: parity.** After the mitigation restoration, each side found
+  one exclusive the other missed per round (fork: the Border0 acquisition;
+  original: the one-character-username root vuln) — single-run cluster
+  emphasis, not a systematic gap. Nothing about smaller prompts improved the
+  reports; parity was reached by transplanting the original's knowledge back.
+- **Compliance: fork slightly ahead**, but the credit belongs to run.py's
+  gates and the file-based relay (deterministic enforcement), not to prompt
+  size. The 2,255-line contract held fine at Opus high; both sides can crack
+  at low effort, and the fork's cracks were closed with mechanisms, not fewer
+  words.
+- **Tokens: the one decisive win.** ~4x less cache-read at Opus high (2.4M
+  vs 10.0M per topic pair), ~3x at Sonnet medium, output tokens 15-30% lower.
+
+So the honest verdict on "smaller prompts + subagent architecture": it buys
+dramatically cheaper input, a moderately cheaper output, and nothing else
+visible in a single-shot run. Two footnotes keep it from being a full
+deflation. First, the cache numbers are context occupancy in disguise: after
+an original run the conversation permanently carries the 55k-token skill plus
+evidence into every later turn; the fork's session stays light. Our headless
+single-shot benchmark is structurally blind to that — the claimed benefit
+lives in the follow-up turns we never tested (the test would be: run + five
+follow-ups, measure degradation and time-to-compaction). Until then it is
+plausible, not proven. Second, the parity is parasitic: the small skill
+matched the original only by mining the original's text and git history.
+"You can compress 2,255 lines 10x" is true only after someone else paid to
+learn what the lines were for. The transferable lesson is not "smaller is
+better" — it is the taxonomy above: enforcement scaffolding can be replaced
+by architecture and gates; domain knowledge cannot be compressed, only
+carried or lost.
