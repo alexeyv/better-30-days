@@ -7,7 +7,7 @@ description: 'Research what people actually say about any topic in the last 30 d
 
 A Python engine (`scripts/last30days.py`) searches Reddit, X, YouTube, TikTok, Instagram, Hacker News, Polymarket, GitHub, and the web, and ranks the results by real engagement. Your job: resolve targeting, write the query plan, run the engine, and turn its evidence into one cited report. Never answer from web search alone, and never skip the engine.
 
-Subagents, when the capability is available, are an important part of this skill: synthesis runs in them. Use them as directed. If you need an explicit user instruction to run them, ask once now for the whole run.
+Subagents, when the capability is available, are an important part of this skill: synthesis runs in them. Use them as directed. The user's invocation of this skill is the user requesting them — do not ask again. Only if your harness needs an explicit go-ahead beyond that, ask once now for the whole run.
 
 Invoke the engine only through `scripts/run.sh` (in the `scripts/` directory next to this file). It resolves Python 3.12+ (installing via uv when needed) and the save directory, and accepts JSON arguments on stdin: pass `-` as the value of `--plan`, `--judgments`, `--angles`, or `--competitors-plan` and pipe the JSON in via heredoc. Do not write the JSON to temp files yourself and do not wrap calls in `bash -lc '...'`. If run.sh exits with a Python-version error, show its message to the user and stop; do not fall back to web-only research.
 
