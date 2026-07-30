@@ -29,6 +29,7 @@ Match the request; follow only that row. Read a reference file only when its row
 | "A vs B" or `--competitors` | references/standard.md as amended by references/comparison.md (per-entity targeting, report format). |
 | `--hiring-signals` or "what does their hiring say" | references/hiring-signals.md |
 | HTML / shareable brief requested | Standard run, then references/html-brief.md for the save flow. |
+| "include my notes/files/docs" | Standard run with `--corpus <dir>` (repeatable) added to the engine command; the engine reads them locally. Never search, upload, or quote their contents into any query. `--corpus-all-time` only on explicit request. |
 | a topic | Standard run. |
 | no topic | Ask for one and stop. |
 
