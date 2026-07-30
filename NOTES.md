@@ -114,3 +114,71 @@ standard run vs 2,255). Validated against the untouched clone via
 
 Engine-side eval metrics (grounding/recency/coherence/coverage/determinism)
 are computed below the prompt layer and are unchanged by construction.
+
+## What the compression actually cost (2026-07-29/30: live runs + archeology)
+
+Five live runs, then a 2×2 A/B against the untouched original (same engine
+byte-for-byte, same model, same topics, headless). Results, and what they
+correct in the sections above.
+
+**The A/B numbers.** Fork: ~31% fewer output tokens, ~45% less cached input,
+main conversation stays clean. Wall time a wash (engine variance dominates).
+Format contract: both sides compliant. **Information: the original won both
+rounds** — it led with the July 29 Zed release while the fork led with April's;
+it read "nvidia earnings reaction" correctly (NVDA hadn't reported; the story
+was hyperscaler capex) while the fork presented May earnings as current; its
+Zed run pulled 6,490 Reddit upvotes to the fork's 69.
+
+**Why the 7/7 eval missed this.** The fixture matrix replays frozen evidence,
+so it can only measure synthesis compliance. Every information loss happened
+upstream, in evidence acquisition — supplement queries, subreddit choice, an
+env var — which fixtures cannot exercise by construction. A compliance eval
+cannot catch a freshness regression.
+
+**The mislabeled category.** The Diagnosis table treats "war stories" and
+repetition as deletable bloat. Half right. The 2,255 lines interleave two
+things that read identically — oddly specific prose — but age differently:
+
+| Kind | Example | Ages? | Correct move |
+|---|---|---|---|
+| Enforcement scaffolding (model-behavior fixes: "don't paste evidence", four-tier LAW repetition) | LAW 1 hoisting | Yes — with model generations; obsolete in a clean subagent context | Replace with architecture (isolation) or a deterministic gate |
+| Domain knowledge (facts about the world: query recipes, env vars, schemas, platform behaviors) | `"{TOPIC} 2026"` supplement anchor; `LAST30DAYS_NATIVE_SEARCH=1`; `--competitors-plan` field names; `CLAUDECODE` ⇒ link style; `@grok` is not a person | No | Keep verbatim, however odd it looks |
+
+The rewrite deleted both kinds because they look alike. Every regression the
+A/B found traced to a dropped item of the second kind — none to architecture.
+The test that separates them: *specific about the world* → keep; *specific
+about model behavior* → gate or architect it away; *vague or repeated* →
+delete. Specificity without a failure citation is still evidence — the year
+anchor carried no war story and was load-bearing.
+
+**Enforcement: gates beat prose.** run.sh now refuses research runs without a
+`--resolved` targeting block (each handle cross-checked against the command
+line) and validates `--competitors-plan` fields against the engine schema.
+Across all post-gate runs the gate never fired — models comply on the first
+try when the constraint is mechanical. Corollaries: an exemption whose
+precondition is self-asserted ("if you cannot spawn subagents") gets abused —
+one run fabricated a user instruction to dodge the subagent path; condition
+exemptions on observable facts, and treat "the user invoked the skill" as the
+user's standing request. The harness is also an actor: Claude Code 2.1.219+
+injects "Do not call the AgentTool unless the user requested it" into Opus 5
+sessions (claude-code#80988), which is what that run misattributed as user
+authority.
+
+**Recovery method** (in rank order of yield): live runs of the fork, session-
+transcript archeology on failed runs, a section-by-section audit of the
+original text, and mining the upstream repo's git history (1,150 commits, 260
+touching SKILL.md) where commit messages carry the rationale the final text
+compressed away. Restored so far: year-anchored supplements, category-peer
+subreddits with a generic-sub ban, targeting verification with visible
+confirmation, competitors-plan schema, wrong-entity cluster discard, widened
+thin-evidence trigger, subagent ask-once rule, invitation ownership. Audit of
+the remaining candidates (native-search export, bare-call gate bypass,
+Pre-Research Status pass-through, link-style detection, and ~15 more) is in
+progress; each gets the ages/doesn't-age test before restoration.
+
+**The corrected claim.** Not "10x smaller and considerably better" —
+*10x smaller, ~40% cheaper, cleaner sessions, equally compliant, and
+measurably worse-informed until the dropped domain knowledge is restored item
+by item.* The original's length is still the root cause of its enforcement
+problem, but its length was also where the domain knowledge lived, and
+compression is not a substitute for knowing which is which.
