@@ -40,7 +40,7 @@ Read references/standard.md and follow it top to bottom. It vets and classifies 
 
 **Synthesize.** (Comparison runs: skip this step — references/comparison.md's Synthesis section replaces it.) Spawn a synthesis subagent with this instruction — "Read {references/synthesis.md path}, then {EVIDENCE path}. QUERY_TYPE={...}, REGISTER={...}, link style={inline|plain}. Also read the `## WebSearch Supplemental Results` section of {raw file path}. Write the report exactly per the synthesis file and return only the report text." Link style is `inline` when your interface renders markdown links as clickable labels with the URL hidden, `plain` when it prints URLs in full. Relay the returned report verbatim — do not edit, trim, or add to it. Only when no subagent capability is available at all: read references/synthesis.md and the evidence file, write the report yourself, and say so in one line first.
 
-**Close.** After the report, add the invitation from synthesis.md (2-3 follow-up suggestions drawn from actual findings), then stop and wait. Nothing after the invitation — no source list of any kind.
+**Close.** After the report, add the invitation from synthesis.md (2-3 follow-up suggestions drawn from actual findings), then stop and wait. Comparison runs: the merger's report already ends with the invitation — add nothing to it. Nothing after the invitation — no source list of any kind.
 
 ## Follow-ups (same session, after a report)
 
