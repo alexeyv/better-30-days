@@ -2,7 +2,7 @@
 
 Reads a company's own job board as evidence of strategic focus. Strongest for early-stage companies; at big companies most roles are noise — say so when it applies.
 
-Run: `"$RUN_SH" "{Company}" --emit=compact --hiring-signals` plus normal resolved flags. It searches the jobs source only, so skip the multi-source query plan (it would be discarded). If the user wants hiring signals *and* community sentiment in one run, add an explicit `--search=reddit,x,jobs`. During resolution, if you find the company's ATS board URL (jobs.ashbyhq.com/..., greenhouse, lever), note it — the engine's careers-page discovery will use it.
+Run: `uv run --no-cache "$RUN_PY" "{Company}" --emit=compact --hiring-signals` plus normal resolved flags. It searches the jobs source only, so skip the multi-source query plan (it would be discarded). If the user wants hiring signals *and* community sentiment in one run, add an explicit `--search=reddit,x,jobs`. During resolution, if you find the company's ATS board URL (jobs.ashbyhq.com/..., greenhouse, lever), note it — the engine's careers-page discovery will use it.
 
 The output records which tier produced the data: `ats` (authoritative, the company's own board), `careers-jsonld` (structured page data), or `web` (aggregator fallback — noisy). Weight confidence accordingly and say when the run fell back to `web`.
 

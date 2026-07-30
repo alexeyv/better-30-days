@@ -1,6 +1,6 @@
 # Doctor (source health)
 
-`"$RUN_SH" doctor` audits every source into four states — WORKING (verified), TURNED ON - UNVERIFIED (configured, no run evidence), NOT WORKING (configured but failing), COULD BE ON (available, unconfigured) — plus CLI health and backup/comment sub-lanes, with a fix prescription per problem. Relay the audit and prescriptions.
+`uv run --no-cache "$RUN_PY" doctor` audits every source into four states — WORKING (verified), TURNED ON - UNVERIFIED (configured, no run evidence), NOT WORKING (configured but failing), COULD BE ON (available, unconfigured) — plus CLI health and backup/comment sub-lanes, with a fix prescription per problem. Relay the audit and prescriptions.
 
 Variants:
 - `doctor --postmortem` — reads the last run's report and says what actually broke per source. Use right after a run that returned fewer results than expected.

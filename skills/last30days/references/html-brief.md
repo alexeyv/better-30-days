@@ -16,7 +16,7 @@ Flow:
 SLUG="{topic lowercased, non-alphanumerics to hyphens}"
 HTML_PATH="$LAST30DAYS_MEMORY_DIR/$SLUG-brief.html"
 [ -f "$HTML_PATH" ] && HTML_PATH="$LAST30DAYS_MEMORY_DIR/$SLUG-brief-$(date +%F).html"   # don't overwrite an earlier brief
-"$RUN_SH" "{TOPIC}" --emit=html --synthesis-file "$SYNTHESIS_FILE" {scope flags} > "$HTML_PATH"
+uv run --no-cache "$RUN_PY" "{TOPIC}" --emit=html --synthesis-file "$SYNTHESIS_FILE" {scope flags} > "$HTML_PATH"
 ```
 
 3. Hand off: give the absolute path; open it locally if the host can and the user wants to view it now. Do not add warnings, debug headers, or safety notes to the file.

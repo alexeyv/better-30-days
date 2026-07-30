@@ -11,21 +11,21 @@ Config file: `~/.config/last30days/.env`. Append-only, always: read first, add m
 > - **Manual setup**: show each source and credential to configure by hand.
 > - **Skip for now**: just the free no-setup sources.
 
-(On hosts without a modal question tool, first run `"$RUN_SH" --welcome` and show its stdout verbatim, then ask.)
+(On hosts without a modal question tool, first run `uv run --no-cache "$RUN_PY" --welcome` and show its stdout verbatim, then ask.)
 
 - **Skip** → append `SETUP_COMPLETE=true` to the config file (so setup never runs again) and go to step 5.
 - **Manual** → show the manual guide (step 4), then step 5.
 - **Auto** → step 2.
 
-**2. Cookie consent (Auto).** If `BROWSER_CONSENT=true` is already in the config file, run `"$RUN_SH" setup --allow-browser-cookies` without asking. Otherwise ask: reading x.com cookies is the only part needing an OK — Chrome first (one-time macOS Keychain prompt; click Always Allow), then Firefox/Safari; cookies are read live, never written to disk. Options:
-- Yes → `"$RUN_SH" setup --allow-browser-cookies`; append `BROWSER_CONSENT=true` after.
-- No, CLIs only → `FROM_BROWSER=off "$RUN_SH" setup`
-- xAI key instead → take the key, append `XAI_API_KEY=...`, then `FROM_BROWSER=off "$RUN_SH" setup`
+**2. Cookie consent (Auto).** If `BROWSER_CONSENT=true` is already in the config file, run `uv run --no-cache "$RUN_PY" setup --allow-browser-cookies` without asking. Otherwise ask: reading x.com cookies is the only part needing an OK — Chrome first (one-time macOS Keychain prompt; click Always Allow), then Firefox/Safari; cookies are read live, never written to disk. Options:
+- Yes → `uv run --no-cache "$RUN_PY" setup --allow-browser-cookies`; append `BROWSER_CONSENT=true` after.
+- No, CLIs only → `FROM_BROWSER=off uv run --no-cache "$RUN_PY" setup`
+- xAI key instead → take the key, append `XAI_API_KEY=...`, then `FROM_BROWSER=off uv run --no-cache "$RUN_PY" setup`
 
 Report what setup found and installed, including whether the Digg CLI is on PATH (active) or off PATH (installed, not yet active). If stderr shows `Permission denied reading Cookies.binarycookies` on macOS: only the Safari fallback needs Full Disk Access — if their x.com login is in Chrome they don't need it; otherwise System Settings → Privacy & Security → Full Disk Access → enable the terminal, then offer one retry.
 
 **3. ScrapeCreators offer (every first run).** Adds TikTok + Instagram (posts and top comments) and YouTube comments; also backfills Reddit search when the free path returns nothing, and fetches YouTube transcripts when yt-dlp is throttled. 10,000 free calls, no card; the GitHub signup grants more free calls than the web form. Ask; options:
-- **GitHub signup** → run `"$RUN_SH" setup --github-start` in the foreground (returns in ~2s). If `status=="already_registered"`: say their existing key is active; stop. Otherwise immediately show the `user_code` from the output: it's on their clipboard, paste it on the GitHub page that opened. Then run `"$RUN_SH" setup --github-poll` (5-min timeout) and read the **last** JSON line:
+- **GitHub signup** → run `uv run --no-cache "$RUN_PY" setup --github-start` in the foreground (returns in ~2s). If `status=="already_registered"`: say their existing key is active; stop. Otherwise immediately show the `user_code` from the output: it's on their clipboard, paste it on the GitHub page that opened. Then run `uv run --no-cache "$RUN_PY" setup --github-poll` (5-min timeout) and read the **last** JSON line:
   - `success` + `persisted: true` → confirm active. (Key is masked; never ask for or echo a raw key.)
   - `success` + `persisted: false` → signup worked but saving failed; have them add `SCRAPECREATORS_API_KEY=...` manually.
   - `error: "Authorized but failed to fetch API key"` → GitHub auth was fine; their account is probably already linked. Have them paste the key from scrapecreators.com, or skip.

@@ -12,7 +12,7 @@ Entity A (first in the vs-string) takes the normal outer flags. Every other enti
 
 ```bash
 EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-$$.md"
-"$RUN_SH" "A vs B vs C" --emit=compact --save-suffix=v3 \
+uv run --no-cache "$RUN_PY" "A vs B vs C" --emit=compact --save-suffix=v3 \
   --x-handle={A_handle} --subreddits={A_subs} [other A flags] \
   --resolved='<the Resolved: block, covering every entity>' \
   --competitors-plan - > "$EVIDENCE" <<'EOF'
@@ -23,7 +23,7 @@ EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-$$.md"
 EOF
 ```
 
-Per-entity fields are exactly `x_handle, x_related, subreddits, github_user, github_repos, trustpilot_domain, context` — run.sh rejects any other key, so don't improvise names from the outer flags (there is no `dedicated_subreddits` here; `github_repos` is a plural list).
+Per-entity fields are exactly `x_handle, x_related, subreddits, github_user, github_repos, trustpilot_domain, context` — run.py rejects any other key, so don't improvise names from the outer flags (there is no `dedicated_subreddits` here; `github_repos` is a plural list).
 
 No `--plan` on comparison runs. `--competitors-list="A,B,C"` exists as a names-only fallback but produces visibly thinner peer data — use the plan. Up to 7 entities total; the engine warns on stderr about any it drops.
 
@@ -57,12 +57,12 @@ One paragraph: competitors or layers of a stack? who leads, who challenges? Comp
 
 ## {Entity}            (one section per entity)
 **Community Sentiment:** {Positive/Mixed/...} ({N}+ mentions across {sources})
-{Optional single sentence when this month's evidence directly supports or contradicts the entity's fetched pitch — anchored to a real item; otherwise nothing.}
+{Optional single sentence when this month's evidence directly supports or contradicts a specific claim in the entity's fetched pitch — anchored to a real item, windowed ("this month's conversation", no trend verbs one 30-day window can't support), never a broad tagline graded against a single thread; otherwise nothing.}
 **Strengths (what people love)** - 3 bullets, each cited
 **Weaknesses (common complaints)** - 2 bullets, each cited
 
 ## Head-to-Head
-The engine emits an empty table scaffold (rows: What it is, GitHub stars, Philosophy, ... Best for, Install). Fill each cell with 5-15 words; "N/A" where an axis doesn't apply. Ground "What it is" in each entity's fetched current pitch, never memory. Prefer live GitHub numbers.
+The engine emits an empty table scaffold (rows: What it is, GitHub stars, Philosophy, ... Best for, Install). Fill each cell with 5-15 words; "N/A" where an axis doesn't apply. Ground "What it is" in each entity's fetched current pitch, never memory. Prefer live GitHub numbers. Never more than one blank line between blocks; a table follows its paragraph after exactly one.
 
 ## The Bottom Line
 **Choose {Entity} if** {use case / tradeoff} — one supporting cited sentence. One per entity.

@@ -35,7 +35,7 @@ Tested against the original's own recorded eval fixtures (all seven topic archet
 
 ## Install
 
-Works on any [Agent Skills](https://agentskills.io) host that can run bash and Python 3.12+ (Claude Code, Codex, Cursor, Copilot, Gemini CLI, ...):
+Works on any [Agent Skills](https://agentskills.io) host that can run bash and [uv](https://docs.astral.sh/uv) (Claude Code, Codex, Cursor, Copilot, Gemini CLI, ...):
 
 ```
 npx skills add alexeyv/better-30-days -g

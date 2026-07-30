@@ -7,9 +7,9 @@ Produces an evidence file and a saved raw file, then hands back to SKILL.md's sy
 - A number that collides with unrelated content ("the 100", "42"): drop it from the search query unless it names the thing (GPT-4 keeps it).
 - Tutorial phrasing ("how to use Docker"): reframe to how people title posts ("Docker workflows tips").
 - A bare generic noun ("sneakers", "coffee"): ask which facet before running.
-- Non-Latin-script topic: add `--web-backend brave`; expect little from Reddit/HN/GitHub and say so in the report.
+- Non-Latin-script topic (or mixed-script): add `--web-backend brave`; skip subreddit targeting unless a known English-speaking community exists; expect little from Reddit/HN/GitHub and say so in the report.
 
-**2. Classify.** QUERY_TYPE = COMPARISON (contains " vs "/" versus "), RECOMMENDATIONS ("best X", "top X", "what X should I use"), NEWS ("what's happening with", "latest on"), PROMPTING ("X prompts", "prompting for X"), else GENERAL. Note TARGET_TOOL if named ("mockups **for Midjourney**") — don't ask for one before research. REGISTER = an explicit `--register` value, else `LAST30DAYS_REGISTER` from config, else default. Then tell the user in one line what you're doing, naming only sources the engine reports available (`"$RUN_SH" --diagnose` prints JSON; use its `available_sources`): `/last30days - searching {sources} for what people are saying about {topic}.`
+**2. Classify.** QUERY_TYPE = COMPARISON (contains " vs "/" versus "), RECOMMENDATIONS ("best X", "top X", "what X should I use"), NEWS ("what's happening with", "latest on"), PROMPTING ("X prompts", "prompting for X"), else GENERAL. Note TARGET_TOOL if named ("mockups **for Midjourney**") — don't ask for one before research. REGISTER = an explicit `--register` value, else `LAST30DAYS_REGISTER` from config, else default. Then tell the user in one line what you're doing, naming only sources the engine reports available (`uv run --no-cache "$RUN_PY" --diagnose` prints JSON; use its `available_sources`): `/last30days - searching {sources} for what people are saying about {topic}.`
 
 **3. Resolve targeting.** This step needs a web-search tool; if the session has none, tell the user targeting cannot be verified and stop — never resolve handles from memory. Use 2-4 batched web searches plus what you already know; verify accounts are the entity's own, not fan/parody accounts.
 
@@ -20,10 +20,11 @@ Produces an evidence file and a saved raw file, then hands back to SKILL.md's sy
 - **TikTok/Instagram**: infer hashtags and creator handles from what you know (`--tiktok-hashtags`, `--tiktok-creators`, `--ig-creators`); don't search for a CEO's TikTok.
 - **YouTube**: infer 2-3 content queries (reviews / reactions / interviews) for the plan.
 - **Trustpilot** (company/brand topics where review evidence helps): the company's domain, not its name → `--trustpilot-domain` (also activates the source).
+- **Polymarket**: an ambiguous short name → `--polymarket-keywords "kw1,kw2"` to pin the right markets ("Warriors" → `nba,gsw,golden-state`).
 - **Positioning** (company/product topics only, never people or ownerless things): fetch the current first-party pitch (homepage tagline, pricing page). Used in synthesis; never quote positioning from memory.
 - One search for current news context, to inform the plan below.
 
-Omit any flag you couldn't resolve. Then show a short `Resolved:` block listing what you found (one line per platform, skip empty ones; if nothing was targeted, say so in one line). For every critical handle/repo, include a short confirming fragment showing how it was verified (e.g. `@handle - bio matches, verified 2026-07`). This block is also the engine's admission ticket: pass the same text via `--resolved='...'` in step 5 — run.sh refuses research runs without it and rejects any `--x-handle`/`--github-user`/`--github-repo`/`--dedicated-subreddits` value that does not appear in the block.
+Omit any flag you couldn't resolve. Then show a short `Resolved:` block listing what you found (one line per platform, skip empty ones; if nothing was targeted, say so in one line). For every critical handle/repo, include a short confirming fragment showing how it was verified (e.g. `@handle - bio matches, verified 2026-07`). This block is also the engine's admission ticket: pass the same text via `--resolved='...'` in step 5 — run.py refuses research runs without it and rejects any `--x-handle`/`--github-user`/`--github-repo`/`--dedicated-subreddits` value that does not appear in the block.
 
 **4. Plan.** Write the query plan yourself (no API key is involved). 1-4 subqueries:
 
@@ -39,13 +40,13 @@ Omit any flag you couldn't resolve. Then show a short `Resolved:` block listing 
 }
 ```
 
-Rules: the primary subquery includes all seven sources above; secondary subqueries (weight 0.6-0.8) may target fewer. `search_query` is keyword-shaped like a post title; `ranking_query` is a question. No dates, months, or words like "news"/"recent" in search queries. If the name collides with anything else (common word, other public figures), anchor **every** subquery with the disambiguator you resolved ("kevin rose digg founder", not "kevin rose"). breaking_news/prediction → strict_recent; concept/how_to → evergreen_ok; else balanced_recent.
+Rules: the primary subquery includes all seven sources above; secondary subqueries (weight 0.6-0.8) may target fewer. `search_query` is keyword-shaped like a post title; `ranking_query` is a question. No dates, months, or words like "news"/"recent" in search queries. Build queries from the user's own terms plus the resolved disambiguator; never add related product or tech names from memory - your knowledge may be stale. If the name collides with anything else (common word, other public figures), anchor **every** subquery with the disambiguator you resolved ("kevin rose digg founder", not "kevin rose"), mirror the same anchor in each `ranking_query` ("What has Kevin Rose, founder of Digg, been doing..."), and anchor on a named entity, not a generic domain word ("digg founder", not "tech investor"). breaking_news/prediction → strict_recent; concept/how_to → evergreen_ok; else balanced_recent. cluster_mode: story for breaking news, debate for opinion/comparison, market for prediction, workflow for how-to, else none.
 
 **5. Run the engine** (foreground, 5-minute timeout), saving stdout to a file so the evidence goes to the synthesis step, not the conversation:
 
 ```bash
 EVIDENCE="${TMPDIR:-/tmp}/last30days-evidence-$$.md"
-"$RUN_SH" "TOPIC" --emit=compact --save-suffix=v3 \
+uv run --no-cache "$RUN_PY" "TOPIC" --emit=compact --save-suffix=v3 \
   --x-handle=... --subreddits=... [other resolved flags] \
   --resolved='<the Resolved: block you showed the user>' \
   --plan - > "$EVIDENCE" <<'EOF'
@@ -55,6 +56,6 @@ EOF
 
 Pass `--days=N`, `--quick`, `--deep`, `--register=...` through when the user asked for them. stderr shows progress and the `[last30days] Saved output to {path}` line — note that saved raw-file path. Exit 3 means the engine asked a clarifying question on stderr: relay it and re-run with the answer folded into the topic.
 
-**6. Web supplements.** Run 2-3 web searches for what the social engine misses — news context, critic/long-form reactions, and one claim worth corroborating (for RECOMMENDATIONS: "best {topic}" roundups; for PROMPTING: technique posts). Anchor one search with the year most of the 30-day window falls in (e.g. "{topic} 2026") so the window's releases and changes surface; step 4's no-dates rule applies to engine plan queries only. Exclude reddit.com and x.com. Then append to the saved raw file a `## WebSearch Supplemental Results` section, one bullet per source that informed the report: `- **{Publisher}** ({domain}) - {1-2 sentence takeaway}`. No URLs in the bullets.
+**6. Web supplements.** Run 2-3 web searches for what the social engine misses — news context, critic/long-form reactions, and one claim worth corroborating (for RECOMMENDATIONS: "best {topic}" roundups; for PROMPTING: technique posts). Anchor one search with the year most of the 30-day window falls in (e.g. "{topic} 2026") so the window's releases and changes surface; step 4's no-dates rule applies to engine plan queries only. Use the user's exact terminology - never substitute names from your own knowledge. Exclude reddit.com and x.com. Then append to the saved raw file a `## WebSearch Supplemental Results` section, one bullet per source that informed the report: `- **{Publisher}** ({domain}) - {1-2 sentence takeaway}`. No URLs in the bullets.
 
 Done. Return to SKILL.md's Synthesize step with: the EVIDENCE path, the raw-file path, QUERY_TYPE, and REGISTER.
